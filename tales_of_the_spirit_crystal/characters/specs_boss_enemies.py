@@ -1,67 +1,35 @@
-characters = {
-    "Nikolal Legal": {
-        "state": {
-            "hp": 10,
-            "hp_maximum": 10,
-            "minimum_atk": 2,
-            "maximum_atk": 7,
-            "atk_special": 3,
-            "def": 2,
-            "speed": 3,
-            "ki": 8,
-            "ki_maximum": 8,
-            "level": 1,
-            "xp": 0,
-            "xp_maximum": 100
-
-        },
-        "skills": {
-            "hit": "A"
-        },
-        "equipments": {
-
-        },
-        "level_up_rule": {
-            "hp_maximum": 3,
-            "minimum_atk": 1,
-            "maximum_atk": 1,
-            "atk_special": 2,
-            "ki_maximum": 1,
-            "def": 1,
-            "speed": 2,
-        }
-    },
+enemies = {
     "Winneba Amoeba": {
-        "state": {
-            "hp": 10,
-            "hp_maximum": 10,
-            "minimum_atk": 2,
-            "maximum_atk": 7,
-            "atk_special": 3,
-            "def": 2,
-            "speed": 3,
-            "ki": 8,
-            "ki_maximum": 8,
-            "level": 1,
-            "xp": 0,
-            "xp_maximum": 100
+            "state": {
+                "hp": 10,
+                "hp_maximum": 10,
+                "minimum_atk": 2,
+                "maximum_atk": 7,
+                "atk_special": 3,
+                "def": 2,
+                "speed": 3,
+                "ki": 8,
+                "ki_maximum": 8,
+                "level": 1,
+                "xp": 0,
+                "xp_maximum": 100
 
-        },
-        "skills": {
-            "hit": "A"
-        },
-        "equipments":{
+            },
+            "skills": {
+                "hit": "A"
+            },
+            "equipments":{
 
-        },
-        "level_up_rule": {
-            "hp_maximum": 2,
-            "minimum_atk": 0,
-            "maximum_atk": 3,
-            "atk_special": 1,
-            "ki_maximum": 1,
-            "def": 2,
-            "speed": 1,
-        }
+            },
+            "level_up_rule": {
+                "hp_maximum": 2,
+                "minimum_atk": 0,
+                "maximum_atk": 3,
+                "atk_special": 1,
+                "ki_maximum": 1,
+                "def": 2,
+                "speed": 1,
+            }
     },
     "Kawan Cabeludo": {
         "state": {
@@ -451,5 +419,3 @@ characters = {
     }
 
 }
-
-
