@@ -11,6 +11,7 @@ enemies = {
                 "ki": 0,
                 "ki_maximum": 0,
                 "level": 1,
+                "melee": True
 
             },
             "skills": {
@@ -33,6 +34,7 @@ enemies = {
                 "ki": 0,
                 "ki_maximum": 0,
                 "level": 1,
+                "melee": True
 
             },
             "skills": {
@@ -55,7 +57,7 @@ enemies = {
                 "ki": 0,
                 "ki_maximum": 0,
                 "level": 1,
-
+                "melee": True
             },
             "skills": {
                 "hit": "A"
@@ -77,7 +79,7 @@ enemies = {
                 "ki": 0,
                 "ki_maximum": 0,
                 "level": 1,
-
+                "melee": False
             },
             "skills": {
                 "hit": "A"
@@ -99,7 +101,7 @@ enemies = {
                 "ki": 50,
                 "ki_maximum": 50,
                 "level": 1,
-
+                "melee": False
             },
             "skills": {
                 "hit": "A"
@@ -121,7 +123,7 @@ enemies = {
                 "ki": 0,
                 "ki_maximum": 0,
                 "level": 1,
-
+                "melee": True
             },
             "skills": {
                 "hit": "A"
@@ -143,7 +145,29 @@ enemies = {
             "ki": 0,
             "ki_maximum": 0,
             "level": 1,
+            "melee": True
+        },
+        "skills": {
+            "hit": "A"
+        },
+        "equipments": {
 
+        },
+
+    },
+    "Goblin Arqueiro": {
+        "state": {
+            "hp": 30,
+            "hp_maximum": 30,
+            "minimum_atk": 30,
+            "maximum_atk": 40,
+            "atk_special": 0,
+            "def": 20,
+            "speed": 15,
+            "ki": 0,
+            "ki_maximum": 0,
+            "level": 1,
+            "melee": False
         },
         "skills": {
             "hit": "A"
@@ -165,7 +189,7 @@ enemies = {
                 "ki": 0,
                 "ki_maximum": 0,
                 "level": 1,
-
+                "melee": True
             },
             "skills": {
                 "hit": "A"
@@ -187,7 +211,7 @@ enemies = {
                 "ki": 0,
                 "ki_maximum": 0,
                 "level": 1,
-
+                "melee": True
             },
             "skills": {
                 "hit": "A"
@@ -209,7 +233,7 @@ enemies = {
                 "ki": 0,
                 "ki_maximum": 0,
                 "level": 1,
-
+                "melee": True
             },
             "skills": {
                 "hit": "A"

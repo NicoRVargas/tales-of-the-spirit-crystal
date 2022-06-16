@@ -5,15 +5,14 @@ def main():
     game = create_game()
 
     game.create_character("Nikolal Legal")
-    game.create_character("João Feijão")
-    game.create_character("Pedro Pedra")
-    game.create_character("Kawan Cabeludo")
-    #game.create_enemy("Slime")
-    #game.create_enemy("Mimico")
+    #game.create_character("João Feijão")
 
-    main_party = ["Nikolal Legal", "João Feijão", "Pedro Pedra", "Kawan Cabeludo"]
-    #party_enemy = ["Slime", "Mimico"]
-    game.world_menu(main_party)
+    game.create_enemy("Slime")
+    game.create_enemy("Mimico")
+
+    main_party = ["Nikolal Legal"]
+    party_enemy = ["Slime", "Mimico"]
+    game.fight(main_party, party_enemy)
 
 
 if __name__ == '__main__':
