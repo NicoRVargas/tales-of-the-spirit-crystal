@@ -1,9 +1,0 @@
-
-dpython:S2208"GImport only needed names or import the module and then use its members.(æ–§°˘ˇˇˇˇ
-kpython:S2208"GImport only needed names or import the module and then use its members.(ßÖ¯ˆ¯ˇˇˇˇ8’ù„’ñ0
-kpython:S2208"GImport only needed names or import the module and then use its members.(È£úç˝ˇˇˇˇ8ûÖÊ’ñ0
-lpython:S3776"TRefactor this function to reduce its Cognitive Complexity from 83 to the 15 allowed.(Â°˜˛
-Epython:S5603{"(Remove this unused function declaration.(õñ¨œˇˇˇˇˇ
->python:S1481Ñ"%Remove the unused local variable "i".(ÀÖÊ”
-Apython:S5603ù"(Remove this unused function declaration.(«üÿ√
-Apython:S5603†"(Remove this unused function declaration.(àñﬁ≤

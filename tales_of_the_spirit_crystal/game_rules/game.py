@@ -7,7 +7,7 @@ from collections import namedtuple
 from random import *
 from time import sleep
 
-game = namedtuple("State", "create_character create_enemy character_printer enemy_printer fight fight_menu target world_menu")
+game = namedtuple("State", "create_character create_enemy character_printer enemy_printer fight fight_menu target world_menu generate_enemy_party")
 
 
 def create_game():
@@ -17,6 +17,11 @@ def create_game():
         },
         "enemy_party": {
             "enemies": {}
+        },
+        "progression": {
+            "walk_path": 0,
+            "boss_area_kill": False
+
         }
     }
 
@@ -27,6 +32,7 @@ def create_game():
 
         if option == 1:
             walk()
+            game_state["progression"]["walk_path"] += 1
         elif option == 2:
             print("[Party] -> In Development")
         elif option == 3:
@@ -34,43 +40,38 @@ def create_game():
         else:
             print('\033[1;3;31mERROR! Digite uma opção válida.\033[m')
             sleep(0.7)
-            world_menu(characters)
+        world_menu(characters)
 
     def walk():
         spawn_chance = random()
 
-        if spawn_chance > 0.5:
+        if spawn_chance > 0.0:
             print("Voce escuta sons estranhos nos arbustos!")
             sleep(0.3)
             print("Novo inimigo encontrado")
             generate_enemy_party()
+            enemy_printer()
+
+            fight(list(game_state["main_party"]["characters"].keys()), list(game_state["enemy_party"]["enemies"].keys()))
         else:
             print("A calmaria continua na jornada dos herois")
 
-    def fight_menu(characters, enemies):
+    def fight_actions(characters, enemies):
         print_fight_menu(characters, enemies)
 
         option = leiaint("Selecione uma opção:")
 
-        if option == 1:
-            # Precisa chamar a função target
-            print("[Ataque] -> In Development")
-        elif option == 2:
-            print("[Especial] -> In Development")
-        elif option == 3:
-            print("[Itens] -> In Development")
-        elif option == 4:
-            print("[Ultimate] -> In Development")
-        else:
+        while option not in(1, 2, 3, 4):
             print('\033[1;3;31mERROR! Digite uma opção válida.\033[m')
-            sleep(0.7)
+            option = leiaint("Selecione uma opção:")
 
-            fight_menu(characters, enemies)
+        return option
 
     def target(enemies):
         for i in range(len(enemies)):
             print(
-                f"{i + 1} - {enemies[i]}{(30 - len(enemies[i])) * ' '}HP:{enemy_open(enemies[i])['hp']}/{enemy_open(enemies[i])['hp_maximum']}"
+                f"{i + 1} - {enemies[i]}{(30 - len(enemies[i])) * ' '}HP:{enemy_open(enemies[i])['hp']}"
+                f"/{enemy_open(enemies[i])['hp_maximum']}"
                 f"{5 * ' '}LVL:{enemy_open(enemies[i])['level']}")
 
         opcao = leiaint("Selecione o Alvo: ")
@@ -81,14 +82,15 @@ def create_game():
             print('\033[1;3;31mERROR! Digite um numero inteiro válido.\033[m')
             for i in range(len(enemies)):
                 print(
-                    f"{i + 1} - {enemies[i]}{(30 - len(enemies[i])) * ' '}HP:{enemy_open(enemies[i])['hp']}/{enemy_open(enemies[i])['hp_maximum']}"
+                    f"{i + 1} - {enemies[i]}{(30 - len(enemies[i])) * ' '}HP:{enemy_open(enemies[i])['hp']}"
+                    f"/{enemy_open(enemies[i])['hp_maximum']}"
                     f"{5 * ' '}LVL:{enemy_open(enemies[i])['level']}")
 
             opcao = leiaint("Selecione o Alvo: ")
 
-        return int(opcao)
+        return opcao
 
-    def initiative(party, enemy_party, ):
+    def initiative(party, enemy_party):
         camp_battle = party + enemy_party
         camp_battle_speed = []
 
@@ -129,7 +131,7 @@ def create_game():
     def generate_enemy_party():
         possible_enemies = list(enemies.keys())
 
-        for i in range(randint(1,4)):
+        for i in range(randint(1, 4)):
             create_enemy(possible_enemies[randint(0, len(possible_enemies) - 1)])
 
     def create_enemy(new_enemy):
@@ -155,10 +157,16 @@ def create_game():
             print(enemy_key, "\n")
 
     def delete_character(character):
-        del game_state["main_party"]["characters"][character]
+        for searched_enemy in game_state["enemy_party"]["enemies"]:
+            if searched_enemy == character:
+                del game_state["enemy_party"]["enemies"][character]
+                break
 
     def delete_enemy(enemy):
-        del game_state["enemy_party"]["enemies"][enemy]
+        for searched_enemy in game_state["enemy_party"]["enemies"]:
+            if searched_enemy == enemy:
+                del game_state["enemy_party"]["enemies"][enemy]
+                break
 
     def hit_enemy(character, target):
         minimum_damage = game_state["main_party"]["characters"][character]["state"]["minimum_atk"]
@@ -173,34 +181,34 @@ def create_game():
         print("")
 
     def hit_character(enemie, target):
-        minimum_damage = game_state["enemy_party"]["enemies"][enemie]["state"]["minimum_atk"]
-        maximum_damage = game_state["enemy_party"]["enemies"][enemie]["state"]["maximum_atk"]
+        minimum_damage = enemy_open(enemie)["minimum_atk"]
+        maximum_damage = enemy_open(enemie)["maximum_atk"]
         true_damage = randint(minimum_damage, maximum_damage)
 
         game_state["main_party"]["characters"][target]["state"]["hp"] -= true_damage
 
         print(f"{enemie} deu {true_damage} de dano, ouch.")
         sleep(1)
-        print(f'{target} agora tem {game_state["main_party"]["characters"][target]["state"]["hp"]} de vida')
+        print(f'{target} agora tem {character_open(target)["hp"]} de vida')
         print("")
 
     def fight(characters, enemies):
         battle_order = initiative(characters, enemies)
 
-        while len(characters) > 0 and len(enemies) > 0:
+        while len(game_state["main_party"]["characters"]) > 0 and len(game_state["enemy_party"]["enemies"]) > 0:
             for fighter in battle_order:
-                if fighter in characters:
-                    opcao = fight_menu(characters, enemies)
+                if fighter in game_state["main_party"]["characters"]:
+                    opcao = fight_actions(characters, enemies)
                     if opcao == 1:
                         index = target(enemies)
-                        hit_enemy(fighter, enemies[index - 1])
-                        if enemy_open(enemies[index - 1])["hp"] <= 0:
-                            print(f"inimigo {enemies[index - 1]} derrotado.")
-                            enemies.remove(enemies[index - 1])
+                        hit_enemy(fighter, enemies[index])
+                        if enemy_open(enemies[index])["hp"] <= 0:
+                            print(f'inimigo {enemies[opcao]} derrotado.')
+                            enemies.remove(enemies[opcao])
                     else:
                         print("Indisponível")
                 if fighter in enemies:
-                    fight_menu(characters, enemies)
+                    fight_actions(characters, enemies)
                     hit_character(fighter, characters[0])
                     characters.remove(characters[0])
 
@@ -210,7 +218,9 @@ def create_game():
         character_printer,
         enemy_printer,
         fight,
-        fight_menu,
+        fight_actions,
         target,
-        world_menu
+        world_menu,
+        generate_enemy_party
+
     )
