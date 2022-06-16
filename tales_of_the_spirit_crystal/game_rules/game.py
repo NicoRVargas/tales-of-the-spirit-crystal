@@ -195,7 +195,7 @@ def create_game():
     def fight(characters, enemies):
         battle_order = initiative(characters, enemies)
 
-        while len(game_state["main_party"]["characters"]) > 0 and len(game_state["enemy_party"]["enemies"]) > 0:
+        while len(game_state["main_party"]["characters"].keys()) > 0 and len(game_state["enemy_party"]["enemies"].keys()) > 0:
             for fighter in battle_order:
                 if fighter in game_state["main_party"]["characters"]:
                     opcao = fight_actions(characters, enemies)
@@ -208,7 +208,7 @@ def create_game():
                             print(f'inimigo {enemy_target} derrotado.')
 
                             delete_enemy(enemy_target)
-                            battle_order.remove(enemy_target) # FIXME
+                            battle_order.remove(enemy_target)
                     else:
                         print("Indisponível")
                 else:
@@ -220,9 +220,7 @@ def create_game():
                         print(f'Personagem {character_target} foi derrotado.')
 
                         delete_character(character_target)
-                        battle_order.remove(character_target) # FIXME
-                # enemy_printer()
-                character_printer()
+                        battle_order.remove(character_target)
 
     return game(
         create_character,
