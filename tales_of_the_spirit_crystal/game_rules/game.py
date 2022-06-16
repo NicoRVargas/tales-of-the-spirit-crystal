@@ -88,7 +88,7 @@ def create_game():
 
             opcao = leiaint("Selecione o Alvo: ")
 
-        return opcao
+        return enemies[opcao]
 
     def initiative(party, enemy_party):
         camp_battle = party + enemy_party
@@ -157,9 +157,9 @@ def create_game():
             print(enemy_key, "\n")
 
     def delete_character(character):
-        for searched_enemy in game_state["enemy_party"]["enemies"]:
-            if searched_enemy == character:
-                del game_state["enemy_party"]["enemies"][character]
+        for searched_character in game_state["main_party"]["characters"]:
+            if searched_character == character:
+                del game_state["main_party"]["characters"][character]
                 break
 
     def delete_enemy(enemy):
@@ -199,18 +199,30 @@ def create_game():
             for fighter in battle_order:
                 if fighter in game_state["main_party"]["characters"]:
                     opcao = fight_actions(characters, enemies)
+
                     if opcao == 1:
-                        index = target(enemies)
-                        hit_enemy(fighter, enemies[index])
-                        if enemy_open(enemies[index])["hp"] <= 0:
-                            print(f'inimigo {enemies[opcao]} derrotado.')
-                            enemies.remove(enemies[opcao])
+                        enemy_target = target(list(game_state["enemy_party"]["enemies"].keys()))
+                        hit_enemy(fighter, enemy_target)
+
+                        if enemy_open(enemy_target)["hp"] <= 0:
+                            print(f'inimigo {enemy_target} derrotado.')
+
+                            delete_enemy(enemy_target)
+                            battle_order.remove(enemy_target) # FIXME
                     else:
                         print("Indisponível")
-                if fighter in enemies:
-                    fight_actions(characters, enemies)
-                    hit_character(fighter, characters[0])
-                    characters.remove(characters[0])
+                else:
+                    character_target = list(game_state["main_party"]["characters"].keys())[0]
+
+                    hit_character(fighter, character_target)
+
+                    if character_open(character_target)["hp"] <= 0:
+                        print(f'Personagem {character_target} foi derrotado.')
+
+                        delete_character(character_target)
+                        battle_order.remove(character_target) # FIXME
+                # enemy_printer()
+                character_printer()
 
     return game(
         create_character,

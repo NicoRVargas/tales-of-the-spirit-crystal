@@ -1,13 +1,13 @@
 enemies = {
     "Slime": {
             "state": {
-                "hp": 50,
+                "hp": 20000,
                 "hp_maximum": 50,
                 "minimum_atk": 999,
                 "maximum_atk": 999,
                 "atk_special": 3,
                 "def": 10,
-                "speed": 0,
+                "speed": 2000,
                 "ki": 0,
                 "ki_maximum": 0,
                 "level": 1,
