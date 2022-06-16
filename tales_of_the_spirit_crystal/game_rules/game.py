@@ -1,11 +1,13 @@
-from collections import namedtuple
-from random import randint
-from time import sleep
-from util.input import *
 from characters.specs_enemies_area1 import enemies
 from characters.specs_characters import characters
+from util.input import *
+from util.printer import *
 
-game = namedtuple("State", "create_character create_enemy character_printer enemy_printer fight menu target")
+from collections import namedtuple
+from random import *
+from time import sleep
+
+game = namedtuple("State", "create_character create_enemy character_printer enemy_printer fight fight_menu target world_menu")
 
 
 def create_game():
@@ -18,84 +20,57 @@ def create_game():
         }
     }
 
-    def menu(characters, enemies):
+    def world_menu(characters):
+        print_world_menu(characters)
 
-        def party_text(name, txt):
-            print(f"{name}{txt}", end=' ')
+        option = leiaint("Selecione uma opção:")
 
-        def template_menu():
-            hp_bar = f"{4 * ' '}HP:{character_open(characters[0])['hp']}/{character_open(characters[0])['hp_maximum']}{4 * ' '}"
-            ki_bar = f"KI:{character_open(characters[0])['ki']}/{character_open(characters[0])['ki_maximum']}{4 * ' '}"
-            level_bar = f"LVL:{character_open(characters[0])['level']}"
-            txt_cabecalho = characters[0] + hp_bar + ki_bar + level_bar
-            cabecalho(txt_cabecalho)
+        if option == 1:
+            walk()
+        elif option == 2:
+            print("[Party] -> In Development")
+        elif option == 3:
+            print("[Acampar] -> In Development")
+        else:
+            print('\033[1;3;31mERROR! Digite uma opção válida.\033[m')
+            sleep(0.7)
+            world_menu(characters)
 
-            maior = []
-            menor = []
+    def walk():
+        spawn_chance = random()
 
-            if len(characters) > len(enemies):
-                maior = characters
-                menor = enemies
-            if len(characters) == len(enemies):
-                igual = len(characters)
-            if len(characters) < len(enemies):
-                maior = enemies
-                menor = characters
+        if spawn_chance > 0.5:
+            print("Voce escuta sons estranhos nos arbustos!")
+            sleep(0.3)
+            print("Novo inimigo encontrado")
+            generate_enemy_party()
+        else:
+            print("A calmaria continua na jornada dos herois")
 
-            c = 0
+    def fight_menu(characters, enemies):
+        print_fight_menu(characters, enemies)
 
-            for i in range(1, len(menor)):
-                hp_bar = f"{(30 - len(menor[i])) * ' '}HP:{character_open(characters[i])['hp']}/{character_open(characters[i])['hp_maximum']}    "
-                ki_bar = f"KI:{character_open(characters[i])['ki']}/{character_open(characters[i])['ki_maximum']}    "
-                level_bar = f"LVL:{character_open(characters[i])['level']}"
-                txt_party = hp_bar + ki_bar + level_bar
-                party_text(characters[i], txt_party)
+        option = leiaint("Selecione uma opção:")
 
-                print(
-                    f"{'':>30}{enemies[c]}{(30 - len(maior[c])) * ' '}HP:{enemy_open(enemies[c])['hp']}/{enemy_open(enemies[c])['hp_maximum']}"
-                    f"{5 * ' '}LVL:{enemy_open(enemies[c])['level']}")
+        if option == 1:
+            # Precisa chamar a função target
+            print("[Ataque] -> In Development")
+        elif option == 2:
+            print("[Especial] -> In Development")
+        elif option == 3:
+            print("[Itens] -> In Development")
+        elif option == 4:
+            print("[Ultimate] -> In Development")
+        else:
+            print('\033[1;3;31mERROR! Digite uma opção válida.\033[m')
+            sleep(0.7)
 
-                c += 1
-
-            if len(characters) > len(enemies):
-                for i in range(len(menor), len(maior)):
-                    hp_bar = f"{(30 - len(menor[i]))}HP:{character_open(characters[i])['hp']}/{character_open(characters[i])['hp_maximum']}{4 * ' '}"
-                    ki_bar = f"KI:{character_open(characters[i])['ki']}/{character_open(characters[i])['ki_maximum']}{4 * ' '}"
-                    level_bar = f"LVL:{character_open(characters[i])['level']}"
-                    txt_party = hp_bar + ki_bar + level_bar
-                    party_text(characters[i], txt_party)
-
-            if len(characters) < len(enemies):
-                for i in range(len(menor), len(maior)):
-                    print(
-                        f"{'':>88}{enemies[i]}{(30 - len(maior[i])) * ' '}HP:{enemy_open(enemies[i])['hp']}/{enemy_open(enemies[i])['hp_maximum']}"
-                        f"{5 * ' '}LVL:{enemy_open(enemies[i])['level']}")
-
-            if len(characters) == len(enemies):
-                for i in range(len(menor), len(maior)):
-                    print(
-                        f"{'':>88}{enemies[i]}{(30 - len(maior[i])) * ' '}HP:{enemy_open(enemies[i])['hp']}/{enemy_open(enemies[i])['hp_maximum']}"
-                        f"{5 * ' '}LVL:{enemy_open(enemies[i])['level']}")
-
-            print(150 * "-")
-            print(f"         [1] Ataque{22 * ' '}[2] Especial{22 * ' '}[3] Itens{22 * ' '}[4] ULTIMATE")
-            print(150 * "-")
-
-        template_menu()
-
-        opcao = input("Qual sua ação: ")
-
-        while opcao not in ('1', '2', '3', '4'):
-            print('\n' * 50)
-            template_menu()
-            opcao = input("Qual sua ação: ")
-
-        return int(opcao)
+            fight_menu(characters, enemies)
 
     def target(enemies):
         for i in range(len(enemies)):
             print(
-                f"{i+1} - {enemies[i]}{(30 - len(enemies[i])) * ' '}HP:{enemy_open(enemies[i])['hp']}/{enemy_open(enemies[i])['hp_maximum']}"
+                f"{i + 1} - {enemies[i]}{(30 - len(enemies[i])) * ' '}HP:{enemy_open(enemies[i])['hp']}/{enemy_open(enemies[i])['hp_maximum']}"
                 f"{5 * ' '}LVL:{enemy_open(enemies[i])['level']}")
 
         opcao = leiaint("Selecione o Alvo: ")
@@ -103,9 +78,10 @@ def create_game():
         while opcao >= len(enemies) or opcao < 0:
             print('\n' * 50)
 
+            print('\033[1;3;31mERROR! Digite um numero inteiro válido.\033[m')
             for i in range(len(enemies)):
                 print(
-                    f"{i+1} - {enemies[i]}{(30 - len(enemies[i])) * ' '}HP:{enemy_open(enemies[i])['hp']}/{enemy_open(enemies[i])['hp_maximum']}"
+                    f"{i + 1} - {enemies[i]}{(30 - len(enemies[i])) * ' '}HP:{enemy_open(enemies[i])['hp']}/{enemy_open(enemies[i])['hp_maximum']}"
                     f"{5 * ' '}LVL:{enemy_open(enemies[i])['level']}")
 
             opcao = leiaint("Selecione o Alvo: ")
@@ -149,6 +125,12 @@ def create_game():
 
     def enemy_open(enemy):
         return game_state["enemy_party"]["enemies"][enemy]['state']
+
+    def generate_enemy_party():
+        possible_enemies = list(enemies.keys())
+
+        for i in range(randint(1,4)):
+            create_enemy(possible_enemies[randint(0, len(possible_enemies) - 1)])
 
     def create_enemy(new_enemy):
         for enemy in enemies.keys():
@@ -208,7 +190,7 @@ def create_game():
         while len(characters) > 0 and len(enemies) > 0:
             for fighter in battle_order:
                 if fighter in characters:
-                    opcao = menu(characters, enemies)
+                    opcao = fight_menu(characters, enemies)
                     if opcao == 1:
                         index = target(enemies)
                         hit_enemy(fighter, enemies[index - 1])
@@ -218,10 +200,9 @@ def create_game():
                     else:
                         print("Indisponível")
                 if fighter in enemies:
-                    menu(characters, enemies)
+                    fight_menu(characters, enemies)
                     hit_character(fighter, characters[0])
                     characters.remove(characters[0])
-
 
     return game(
         create_character,
@@ -229,6 +210,7 @@ def create_game():
         character_printer,
         enemy_printer,
         fight,
-        menu,
-        target
+        fight_menu,
+        target,
+        world_menu
     )
