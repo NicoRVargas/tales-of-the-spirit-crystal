@@ -291,15 +291,15 @@ enemies = {
     },
     "Miguel Bordel": {
         "state": {
-            "hp": 10,
-            "hp_maximum": 10,
-            "minimum_atk": 2,
-            "maximum_atk": 7,
-            "atk_special": 3,
-            "def": 2,
-            "speed": 3,
-            "ki": 8,
-            "ki_maximum": 8,
+            "hp": 120,
+            "hp_maximum": 120,
+            "minimum_atk": 20,
+            "maximum_atk": 40,
+            "atk_special": 60,
+            "def": 30,
+            "speed": 20,
+            "ki": 60,
+            "ki_maximum": 60,
             "level": 1,
             "xp": 0,
             "xp_maximum": 100
@@ -312,13 +312,13 @@ enemies = {
 
         },
         "level_up_rule": {
-            "hp_maximum": 1,
-            "minimum_atk": 1,
-            "maximum_atk": 1,
-            "atk_special": 3,
-            "ki_maximum": 1,
-            "def": 2,
-            "speed": 3,
+            "hp_maximum": 100,
+            "minimum_atk": 10,
+            "maximum_atk": 10,
+            "atk_special": 30,
+            "ki_maximum": 20,
+            "def": 20,
+            "speed": 10,
         }
     },
     "Athos Ratos": {

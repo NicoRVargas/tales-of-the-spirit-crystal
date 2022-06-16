@@ -1,8 +1,11 @@
 from collections import namedtuple
 from random import randint
 from time import sleep
+from util.input import *
+from characters.specs_enemies_area1 import enemies
+from characters.specs_characters import characters
 
-game = namedtuple("State", "create_character create_enemy character_printer enemy_printer fight menu")
+game = namedtuple("State", "create_character create_enemy character_printer enemy_printer fight menu target")
 
 
 def create_game():
@@ -16,38 +19,67 @@ def create_game():
     }
 
     def menu(characters, enemies):
-        def linha(tam=50):
-            print("-=" * tam)
 
-        def cabecalho(txt):
-            linha()
-            print(txt.center(100))
-            linha()
+        def party_text(name, txt):
+            print(f"{name}{txt}", end=' ')
 
         def template_menu():
+            hp_bar = f"{4 * ' '}HP:{character_open(characters[0])['hp']}/{character_open(characters[0])['hp_maximum']}{4 * ' '}"
+            ki_bar = f"KI:{character_open(characters[0])['ki']}/{character_open(characters[0])['ki_maximum']}{4 * ' '}"
+            level_bar = f"LVL:{character_open(characters[0])['level']}"
+            txt_cabecalho = characters[0] + hp_bar + ki_bar + level_bar
+            cabecalho(txt_cabecalho)
+
+            maior = []
+            menor = []
+
+            if len(characters) > len(enemies):
+                maior = characters
+                menor = enemies
+            if len(characters) == len(enemies):
+                igual = len(characters)
+            if len(characters) < len(enemies):
+                maior = enemies
+                menor = characters
+
             c = 0
-            for character in range(characters):
-                if c == 0:
-                    hp_bar = f"{4 * ' '}HP:{character_open(character)['hp']}/{character_open(character)['hp_maximum']}{4 * ' '}"
-                    ki_bar = f"KI:{character_open(character)['ki']}/{character_open(character)['ki_maximum']}{4 * ' '}"
-                    level_bar = f"LVL:{character_open(character)['level']}"
-                    txt_cabecalho = character + hp_bar + ki_bar + level_bar
-                    cabecalho(txt_cabecalho)
-                    c += 1
-                else:
-                    hp_bar = f"{4 * ' '}HP:{character_open(character)['hp']}/{character_open(character)['hp_maximum']}{4 * ' '}"
-                    ki_bar = f"KI:{character_open(character)['ki']}/{character_open(character)['ki_maximum']}{4 * ' '}"
-                    level_bar = f"LVL:{character_open(character)['level']}"
-                    print(f"{character}{4 * ' '}{hp_bar}{4 * ' '}{ki_bar}{4 * ' '}{level_bar}")
-            try:
-                print(f"{5 * ' '}{enemies}{5 * ' '}HP:{enemy_open(enemies)['hp']}/{enemy_open(enemies)['hp_maximum']}"
-                      f"{5 * ' '}LVL:{enemy_open(enemies)['level']}")
-                print("")
-                print(100 * "-")
-                print(f"      [1] Ataque{15 * ' '}[2] Especial{15 * ' '}[3] Itens{15 * ' '}[4] ULTIMATE")
-                print(100 * "-")
-            except:
-                pass
+
+            for i in range(1, len(menor)):
+                hp_bar = f"{(30 - len(menor[i])) * ' '}HP:{character_open(characters[i])['hp']}/{character_open(characters[i])['hp_maximum']}    "
+                ki_bar = f"KI:{character_open(characters[i])['ki']}/{character_open(characters[i])['ki_maximum']}    "
+                level_bar = f"LVL:{character_open(characters[i])['level']}"
+                txt_party = hp_bar + ki_bar + level_bar
+                party_text(characters[i], txt_party)
+
+                print(
+                    f"{'':>30}{enemies[c]}{(30 - len(maior[c])) * ' '}HP:{enemy_open(enemies[c])['hp']}/{enemy_open(enemies[c])['hp_maximum']}"
+                    f"{5 * ' '}LVL:{enemy_open(enemies[c])['level']}")
+
+                c += 1
+
+            if len(characters) > len(enemies):
+                for i in range(len(menor), len(maior)):
+                    hp_bar = f"{(30 - len(menor[i]))}HP:{character_open(characters[i])['hp']}/{character_open(characters[i])['hp_maximum']}{4 * ' '}"
+                    ki_bar = f"KI:{character_open(characters[i])['ki']}/{character_open(characters[i])['ki_maximum']}{4 * ' '}"
+                    level_bar = f"LVL:{character_open(characters[i])['level']}"
+                    txt_party = hp_bar + ki_bar + level_bar
+                    party_text(characters[i], txt_party)
+
+            if len(characters) < len(enemies):
+                for i in range(len(menor), len(maior)):
+                    print(
+                        f"{'':>88}{enemies[i]}{(30 - len(maior[i])) * ' '}HP:{enemy_open(enemies[i])['hp']}/{enemy_open(enemies[i])['hp_maximum']}"
+                        f"{5 * ' '}LVL:{enemy_open(enemies[i])['level']}")
+
+            if len(characters) == len(enemies):
+                for i in range(len(menor), len(maior)):
+                    print(
+                        f"{'':>88}{enemies[i]}{(30 - len(maior[i])) * ' '}HP:{enemy_open(enemies[i])['hp']}/{enemy_open(enemies[i])['hp_maximum']}"
+                        f"{5 * ' '}LVL:{enemy_open(enemies[i])['level']}")
+
+            print(150 * "-")
+            print(f"         [1] Ataque{22 * ' '}[2] Especial{22 * ' '}[3] Itens{22 * ' '}[4] ULTIMATE")
+            print(150 * "-")
 
         template_menu()
 
@@ -57,6 +89,26 @@ def create_game():
             print('\n' * 50)
             template_menu()
             opcao = input("Qual sua ação: ")
+
+        return int(opcao)
+
+    def target(enemies):
+        for i in range(len(enemies)):
+            print(
+                f"{i+1} - {enemies[i]}{(30 - len(enemies[i])) * ' '}HP:{enemy_open(enemies[i])['hp']}/{enemy_open(enemies[i])['hp_maximum']}"
+                f"{5 * ' '}LVL:{enemy_open(enemies[i])['level']}")
+
+        opcao = leiaint("Selecione o Alvo: ")
+
+        while opcao >= len(enemies) or opcao < 0:
+            print('\n' * 50)
+
+            for i in range(len(enemies)):
+                print(
+                    f"{i+1} - {enemies[i]}{(30 - len(enemies[i])) * ' '}HP:{enemy_open(enemies[i])['hp']}/{enemy_open(enemies[i])['hp_maximum']}"
+                    f"{5 * ' '}LVL:{enemy_open(enemies[i])['level']}")
+
+            opcao = leiaint("Selecione o Alvo: ")
 
         return int(opcao)
 
@@ -87,21 +139,10 @@ def create_game():
         return camp_battle
 
     def create_character(new_character):
-        game_state["main_party"]["characters"][new_character] = {
-            "state": {
-                "hp": 10,
-                "hp_maximum": 10,
-                "minimum_damage": 2,
-                "maximum_damage": 7,
-                "ki": 8,
-                "speed": 10,
-                "ki_maximum": 8,
-                "level": 1
-            },
-            "actions": {
-                "hit": hit_enemy
-            }
-        }
+        for character in characters.keys():
+            if character == new_character:
+                game_state["main_party"]["characters"][new_character] = characters[new_character]
+                break
 
     def character_open(character):
         return game_state["main_party"]["characters"][character]['state']
@@ -110,37 +151,25 @@ def create_game():
         return game_state["enemy_party"]["enemies"][enemy]['state']
 
     def create_enemy(new_enemy):
-        hp = randint(4, 8)
-        game_state["enemy_party"]["enemies"][new_enemy] = {
-            "state": {
-                "hp": hp,
-                "hp_maximum": hp,
-                "ki": 2,
-                "ki_maximum": 2,
-                "speed": 20,
-                "minimum_damage": 10,
-                "maximum_damage": 10,
-                "level": 1
-            },
-            "actions": {
-                "hit": hit_character
-            }
-        }
+        for enemy in enemies.keys():
+            if enemy == new_enemy:
+                game_state["enemy_party"]["enemies"][new_enemy] = enemies[new_enemy]
+                break
 
     def character_printer():
-        if len(game_state["characters"].keys()) <= 0:
+        if len(game_state["main_party"]["characters"].keys()) <= 0:
             print("[test_printer] -> Nao existem personagens")
             return
 
-        for character_key in game_state["characters"]:
+        for character_key in game_state["main_party"]["characters"]:
             print(character_key, "\n")
 
     def enemy_printer():
-        if len(game_state["enemies"].keys()) <= 0:
+        if len(game_state["enemy_party"]["enemies"].keys()) <= 0:
             print("[test_printer] -> Nao existem inimigos")
             return
 
-        for enemy_key in game_state["enemies"]:
+        for enemy_key in game_state["enemy_party"]["enemies"]:
             print(enemy_key, "\n")
 
     def delete_character(character):
@@ -150,8 +179,8 @@ def create_game():
         del game_state["enemy_party"]["enemies"][enemy]
 
     def hit_enemy(character, target):
-        minimum_damage = game_state["main_party"]["characters"][character]["state"]["minimum_damage"]
-        maximum_damage = game_state["main_party"]["characters"][character]["state"]["maximum_damage"]
+        minimum_damage = game_state["main_party"]["characters"][character]["state"]["minimum_atk"]
+        maximum_damage = game_state["main_party"]["characters"][character]["state"]["maximum_atk"]
         true_damage = randint(minimum_damage, maximum_damage)
 
         game_state["enemy_party"]["enemies"][target]["state"]["hp"] -= true_damage
@@ -162,8 +191,8 @@ def create_game():
         print("")
 
     def hit_character(enemie, target):
-        minimum_damage = game_state["enemy_party"]["enemies"][enemie]["state"]["minimum_damage"]
-        maximum_damage = game_state["enemy_party"]["enemies"][enemie]["state"]["maximum_damage"]
+        minimum_damage = game_state["enemy_party"]["enemies"][enemie]["state"]["minimum_atk"]
+        maximum_damage = game_state["enemy_party"]["enemies"][enemie]["state"]["maximum_atk"]
         true_damage = randint(minimum_damage, maximum_damage)
 
         game_state["main_party"]["characters"][target]["state"]["hp"] -= true_damage
@@ -173,46 +202,26 @@ def create_game():
         print(f'{target} agora tem {game_state["main_party"]["characters"][target]["state"]["hp"]} de vida')
         print("")
 
-    def fight(character, enemy):
-        # battle_order = initiative(characters, enemies)
-        battle_camp = [character, enemy]
-        main_party = [character]
-        party_enemy = [enemy]
+    def fight(characters, enemies):
+        battle_order = initiative(characters, enemies)
 
-        while len(main_party) > 0 and len(party_enemy) > 0:
-            for fighter in range(len(battle_camp)):
-                if battle_camp[fighter] in character:
-                    opcao = menu(character, enemy)
+        while len(characters) > 0 and len(enemies) > 0:
+            for fighter in battle_order:
+                if fighter in characters:
+                    opcao = menu(characters, enemies)
                     if opcao == 1:
-                        hit_enemy(battle_camp[fighter], enemy)
-                        if enemy_open(enemy)["hp"] <= 0:
-                            party_enemy.remove(enemy)
-                            battle_camp.remove(enemy)
-                            print(f"{enemy} foi derrotado por {character}!")
-                            print(f"{character} recebeu 1 EXP")
-                            delete_enemy(enemy)
-                        sleep(2)
-                        if character not in battle_camp:
-                            print(f"{character} Morreu.")
-                    if opcao == 2:
-                        print("Você não tem especial ainda.")
-                        sleep(1)
-                    if opcao == 3:
-                        print("Você não tem itens.")
-                        sleep(1)
-                    if opcao == 4:
-                        print("Você não tem uma ULTIMATE.")
-                        sleep(1)
-                if battle_camp[fighter] in enemy:
-                    hit_character(battle_camp[fighter], character)
-                    if character_open(character)["hp"] <= 0:
-                        main_party.remove(character)
-                        battle_camp.remove(character)
-                        print(f"{character} morreu...")
-                        delete_character(character)
-                    sleep(2)
+                        index = target(enemies)
+                        hit_enemy(fighter, enemies[index - 1])
+                        if enemy_open(enemies[index - 1])["hp"] <= 0:
+                            print(f"inimigo {enemies[index - 1]} derrotado.")
+                            enemies.remove(enemies[index - 1])
+                    else:
+                        print("Indisponível")
+                if fighter in enemies:
+                    menu(characters, enemies)
+                    hit_character(fighter, characters[0])
+                    characters.remove(characters[0])
 
-        print("A luta acabou!")
 
     return game(
         create_character,
@@ -220,5 +229,6 @@ def create_game():
         character_printer,
         enemy_printer,
         fight,
-        menu
+        menu,
+        target
     )
